@@ -7,34 +7,22 @@
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     
     <script>
-        // Компонент для обробки натискань на екран
         AFRAME.registerComponent('ar-spawner', {
             init: function () {
                 const sceneEl = this.el;
                 const reticle = document.querySelector('#reticle');
                 const models = ['#avatar-model', '#glasses1-model', '#glasses2-model'];
 
-                // Подія 'select' спрацьовує при натисканні на екран у WebXR
                 sceneEl.addEventListener('select', () => {
-                    // Перевіряємо, чи бачимо ми поверхню (чи приціл активний)
                     if (reticle && reticle.getAttribute('visible')) {
                         const newElement = document.createElement('a-entity');
-                        
-                        // Вибираємо випадкову модель
                         const randomIndex = Math.floor(Math.random() * models.length);
-                        const chosenModel = models[randomIndex];
                         
-                        // Встановлюємо параметри моделі
-                        newElement.setAttribute('gltf-model', chosenModel);
-                        
-                        // Копіюємо позицію та поворот з прицілу
+                        newElement.setAttribute('gltf-model', models[randomIndex]);
                         newElement.setAttribute('position', reticle.getAttribute('position'));
                         newElement.setAttribute('rotation', reticle.getAttribute('rotation'));
-                        
-                        // Масштабування (підправте, якщо моделі завеликі/замалі)
                         newElement.setAttribute('scale', '0.5 0.5 0.5'); 
                         
-                        // Додаємо об'єкт на сцену
                         sceneEl.appendChild(newElement);
                     }
                 });
@@ -45,19 +33,16 @@
 <body>
 
     <a-scene 
-        webxr="requiredFeatures: hit-test, local-floor; optionalFeatures: dom-overlay;" 
+        webxr="requiredFeatures: hit-test, local-floor;" 
+        ar-mode-ui="enabled: true"
         ar-spawner>
         
-        <a-assets>
+        <a-assets timeout="10000">
             <a-asset-item id="avatar-model" src="avatar.glb"></a-asset-item>
             <a-asset-item id="glasses1-model" src="glasses1.glb"></a-asset-item>
             <a-asset-item id="glasses2-model" src="glasses2.glb"></a-asset-item>
         </a-assets>
-<a-assets timeout="10000">
-    <a-asset-item id="avatar-model" src="./avatar.glb"></a-asset-item>
-    <a-asset-item id="glasses1-model" src="./glasses1.glb"></a-asset-item>
-    <a-asset-item id="glasses2-model" src="./glasses2.glb"></a-asset-item>
-</a-assets>
+
         <a-entity 
             id="reticle" 
             ar-hit-test="doHitTest: true" 
@@ -66,7 +51,6 @@
         </a-entity>
 
         <a-camera position="0 1.6 0"></a-camera>
-        
     </a-scene>
 
 </body>
